@@ -22,7 +22,7 @@ def main ():
     center = boundingBox.Center
     #print "center of curve at" + str(object.X) + "," + str(object.Y) + "," + str(object.Z)
 
-    rs.AddPoint(center)
+    #rs.AddPoint(center)
 
     newCurves = rs.ExplodeCurves(curveIn)
 
@@ -41,7 +41,7 @@ def main ():
         rs.DeleteObject(surface)
 
 
-def extrudeCurveNormalToSurface():
+def trimSurfaceWithCurves():
     centroid = rs.SurfaceAreaCentroid(surface)
     domain_u = rs.SurfaceDomain(surface, 0)
     domain_v = rs.SurfaceDomain(surface, 0)
