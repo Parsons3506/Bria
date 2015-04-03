@@ -32,11 +32,43 @@ def main ():
         pts.append(rs.CurveEndPoint(curve))
         pts.append(center)
         pts.append(rs.CurveStartPoint(curve))
+
         triangleCurve = rs.AddCurve(pts,1)
+        roundCurve = rs.AddCurve(pts,3)
         surface = rs.AddPlanarSrf(triangleCurve)
 
-        roundCurve = rs.AddCurve(pts,3)
-        rs.SplitSurface
+        newSrfs = trimSurfaceWithCurves(surface,roundCurves)
+        rs.DeleteObject(surface)
+
+
+def extrudeCurveNormalToSurface():
+    centroid = rs.SurfaceAreaCentroid(surface)
+    domain_u = rs.SurfaceDomain(surface, 0)
+    domain_v = rs.SurfaceDomain(surface, 0)
+    normal = rs.SurfaceNormal(surface, [domain_u[0],domain_v[0]])
+    tempLine = rs.AddLine(centroid[0],rs.PointAdd(normal,centroid[0]))
+
+    extrudeSrf = rs.ExtrudeCurve(curve,tempLine)
+    rs.DeleteObject(tempLine)
+
+    newSrfs = rs.SplitBrep(surface,extrudeSrf)
+    rs.DeleteObject(extrudeSrf)
+    maxArea = 0
+    minArea = 99999999
+
+    for srf in newSrfs:
+        area = rs.Area(srf)
+        if area>maxArea:
+            deleteSrf = srf
+            maxArea = area
+        if area < minArea:
+            returnSrf = srf
+            minArea = area
+
+    rs.DeleteObject(surface)
+    return returnSrf
+
+
 
 
 
